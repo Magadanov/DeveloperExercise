@@ -77,13 +77,15 @@ const data = [
 
 let computerChairList = document.getElementById('computerChairList_____SHOW');
 
-displayList(data, computerChairList);
+displayList(data, '', computerChairList);
 
-function displayList(array, uniqId) {
+function displayList(array, sortOption, uniqId) {
 
     uniqId.innerHTML = "";
 
-    array.map((a) => {
+    const sortedArray = sortArrayByOption(array, sortOption);
+
+    sortedArray.map((a) => {
 
         let formatter = function (priceSum) {
             let price = priceSum.toString();
@@ -122,3 +124,40 @@ function displayList(array, uniqId) {
     });
 
 }
+
+function sortArrayByOption(array, option) {
+    switch (option) {
+        case 'по возрастанию цены':
+            return sortByPrice(array, 'asc');
+        case 'по убыванию цены':
+            return sortByPrice(array, 'desc');
+        case 'по коду':
+            return sortByCode(array);
+        case 'по названию':
+            return sortByName(array);
+        default:
+            return array
+    }
+}
+
+function sortByPrice(array, order) {
+    let orderBy = order === 'asc' ? 1 : -1;
+
+    return [...array].sort((a, b) => (Number(a.price) - Number(b.price)) * orderBy);
+}
+
+function sortByCode(array) {
+    return [...array].sort((a, b) => Number(a.code) - Number(b.code));
+}
+
+function sortByName(array) {
+    return [...array].sort((a, b) => a - b);
+}
+
+// handle sort option element 
+document.querySelectorAll('.sorting_option li').forEach(function (item) {
+    item.addEventListener('click', function () {
+        const selectedValue = this.textContent;
+        displayList(data, selectedValue, computerChairList);
+    });
+});
